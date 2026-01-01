@@ -1,6 +1,4 @@
-import { db } from "./db";
 import { documents, type InsertDocument, type Document } from "@shared/schema";
-import { eq } from "drizzle-orm";
 
 export interface IStorage {
   getDocuments(): Promise<Document[]>;
@@ -9,32 +7,48 @@ export interface IStorage {
   updateDocumentStatus(id: number, status: string, extractedText?: string, convertedPath?: string): Promise<Document>;
 }
 
-export class DatabaseStorage implements IStorage {
+export class MemStorage implements IStorage {
+  private documents: Map<number, Document>;
+  private currentId: number;
+
+  constructor() {
+    this.documents = new Map();
+    this.currentId = 1;
+  }
+
   async getDocuments(): Promise<Document[]> {
-    return await db.select().from(documents).orderBy(documents.createdAt);
+    return Array.from(this.documents.values()).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
 
   async getDocument(id: number): Promise<Document | undefined> {
-    const [doc] = await db.select().from(documents).where(eq(documents.id, id));
-    return doc;
+    return this.documents.get(id);
   }
 
   async createDocument(doc: InsertDocument): Promise<Document> {
-    const [newDoc] = await db.insert(documents).values(doc).returning();
+    const id = this.currentId++;
+    const newDoc: Document = {
+      ...doc,
+      id,
+      status: "pending",
+      createdAt: new Date(),
+      convertedPath: null,
+      extractedText: null
+    };
+    this.documents.set(id, newDoc);
     return newDoc;
   }
 
   async updateDocumentStatus(id: number, status: string, extractedText?: string, convertedPath?: string): Promise<Document> {
-    const updates: Partial<Document> = { status };
-    if (extractedText !== undefined) updates.extractedText = extractedText;
-    if (convertedPath !== undefined) updates.convertedPath = convertedPath;
+    const doc = this.documents.get(id);
+    if (!doc) throw new Error("Document not found");
 
-    const [updated] = await db.update(documents)
-      .set(updates)
-      .where(eq(documents.id, id))
-      .returning();
-    return updated;
+    const updatedDoc = { ...doc, status };
+    if (extractedText !== undefined) updatedDoc.extractedText = extractedText;
+    if (convertedPath !== undefined) updatedDoc.convertedPath = convertedPath;
+
+    this.documents.set(id, updatedDoc);
+    return updatedDoc;
   }
 }
 
-export const storage = new DatabaseStorage();
+export const storage = new MemStorage();
