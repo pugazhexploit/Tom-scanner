@@ -1,5 +1,6 @@
 FROM node:20-bookworm
 
+# Stateless application (No Database)
 # Install system dependencies for Python and Tesseract
 RUN apt-get update && apt-get install -y \
     python3 \

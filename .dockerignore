@@ -3,5 +3,4 @@ dist
 .git
 .local
 uploads
-sqlite.db
 .env
