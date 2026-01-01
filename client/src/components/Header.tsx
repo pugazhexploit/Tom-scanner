@@ -14,17 +14,10 @@ export function Header() {
             <p className="text-xs text-muted-foreground font-medium tracking-wide">HANDWRITTEN TO WORD</p>
           </div>
         </Link>
-        
+
         <nav className="flex items-center gap-6">
-          <a 
-            href="https://github.com/tesseract-ocr/tesseract" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-          >
-            Powered by Tesseract
-          </a>
-          <div className="h-4 w-px bg-border"></div>
+
+
           <span className="text-sm font-medium text-muted-foreground">
             v1.0.0
           </span>
