@@ -12,9 +12,9 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
-      
+
       <main className="flex-1 w-full max-w-5xl mx-auto px-4 py-12 space-y-16">
-        
+
         {/* Hero Section */}
         <section className="text-center space-y-6 max-w-3xl mx-auto">
           <motion.div
@@ -32,8 +32,8 @@ export default function Home() {
               </span>
             </h1>
           </motion.div>
-          
-          <motion.p 
+
+          <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
@@ -91,6 +91,7 @@ export default function Home() {
 
       <footer className="py-8 border-t border-border/40 text-center text-sm text-muted-foreground">
         <p>&copy; {new Date().getFullYear()} Tamil OCR System. All rights reserved.</p>
+        <p className="mt-2 text-xs opacity-70">Developed by Pugazhenthi</p>
       </footer>
     </div>
   );
